@@ -49,8 +49,26 @@
 
 OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options)
 {
-    #warning To complete your generator please implement the function GeneratePreviewForURL in GeneratePreviewForURL.c
-    return noErr;
+	 if(CFStringCompare(contentTypeUTI, CFSTR("org.oasis.opendocument.text"), 0)==kCFCompareEqualTo)
+	{
+		CGImageRef odPreviewImage=GetPreviewImageForOD(url);
+		if(odPreviewImage)
+		{
+			CGContextRef drawRef=QLPreviewRequestCreateContext(preview, CGSizeMake(CGImageGetWidth(odPreviewImage), CGImageGetHeight(odPreviewImage)), 1, NULL);
+			if(drawRef)
+			{
+				CGRect destRect;
+				destRect.origin.x=destRect.origin.y=0;
+				destRect.size=CGSizeMake(CGImageGetWidth(odPreviewImage), CGImageGetHeight(odPreviewImage));
+				CGContextDrawImage(drawRef, destRect, odPreviewImage);
+				
+				CFRelease(drawRef);
+			}
+			CFRelease(odPreviewImage);
+		}
+	}
+	
+	return noErr;
 }
 
 void CancelPreviewGeneration(void* thisInterface, QLPreviewRequestRef preview)
