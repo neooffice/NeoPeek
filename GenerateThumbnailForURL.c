@@ -40,6 +40,7 @@
 #include <CoreServices/CoreServices.h>
 #include <QuickLook/QuickLook.h>
 #include "common.h"
+#include <stdio.h>
 
 /* -----------------------------------------------------------------------------
     Generate a thumbnail for file
@@ -50,7 +51,7 @@
 OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thumbnail, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options, CGSize maxSize)
 {
 	OSStatus toReturn = noErr;
-	
+		
     if(CFStringCompare(contentTypeUTI, CFSTR("org.oasis.opendocument.text"), 0)==kCFCompareEqualTo)
 	{
 		CGImageRef odPreviewImage=GetPreviewImageForOD(url);

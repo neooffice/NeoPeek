@@ -48,8 +48,8 @@
    ----------------------------------------------------------------------------- */
 
 OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options)
-{
-	 if(CFStringCompare(contentTypeUTI, CFSTR("org.oasis.opendocument.text"), 0)==kCFCompareEqualTo)
+{	
+	if(CFStringCompare(contentTypeUTI, CFSTR("org.oasis.opendocument.text"), 0)==kCFCompareEqualTo)
 	{
 		CGImageRef odPreviewImage=GetPreviewImageForOD(url);
 		if(odPreviewImage)

@@ -14,6 +14,12 @@
 		8D5B49A804867FD3000E48DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8D5B49A704867FD3000E48DA /* InfoPlist.strings */; };
 		AC0D9CC20B6BFD15006BCA29 /* common.mm in Sources */ = {isa = PBXBuildFile; fileRef = AC0D9CC10B6BFD15006BCA29 /* common.mm */; };
 		AC9E0D3F0B6BFB0B005ECDCE /* common.h in Headers */ = {isa = PBXBuildFile; fileRef = AC9E0D3E0B6BFB0B005ECDCE /* common.h */; };
+		ACB9DA810BB8D98C009491BF /* test.mm in Sources */ = {isa = PBXBuildFile; fileRef = ACB9DA800BB8D98C009491BF /* test.mm */; };
+		ACB9DA830BB8D9A0009491BF /* common.mm in Sources */ = {isa = PBXBuildFile; fileRef = AC0D9CC10B6BFD15006BCA29 /* common.mm */; };
+		ACB9DA8F0BB8DA41009491BF /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F28CFBFC0A3EC0AF000ABFF5 /* ApplicationServices.framework */; };
+		ACB9DA900BB8DA42009491BF /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */; };
+		ACB9DA910BB8DA43009491BF /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C86B05260671AA6E00DD9006 /* CoreServices.framework */; };
+		ACB9DA9C0BB8DD11009491BF /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ACB9DA9B0BB8DD11009491BF /* Carbon.framework */; };
 		C86B05270671AA6E00DD9006 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C86B05260671AA6E00DD9006 /* CoreServices.framework */; };
 		F28CFBFD0A3EC0AF000ABFF5 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F28CFBFC0A3EC0AF000ABFF5 /* ApplicationServices.framework */; };
 		F28CFC030A3EC0C6000ABFF5 /* QuickLook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F28CFC020A3EC0C6000ABFF5 /* QuickLook.framework */; };
@@ -29,6 +35,9 @@
 		8D576317048677EA00EA77CD /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		AC0D9CC10B6BFD15006BCA29 /* common.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = common.mm; sourceTree = "<group>"; };
 		AC9E0D3E0B6BFB0B005ECDCE /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
+		ACB9DA6C0BB8D914009491BF /* Standalone Preview Extraction */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Standalone Preview Extraction"; sourceTree = BUILT_PRODUCTS_DIR; };
+		ACB9DA800BB8D98C009491BF /* test.mm */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.objcpp; path = test.mm; sourceTree = SOURCE_ROOT; };
+		ACB9DA9B0BB8DD11009491BF /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		C86B05260671AA6E00DD9006 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
 		F28CFBFC0A3EC0AF000ABFF5 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
 		F28CFC020A3EC0C6000ABFF5 /* QuickLook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickLook.framework; path = /System/Library/Frameworks/QuickLook.framework; sourceTree = "<absolute>"; };
@@ -43,6 +52,17 @@
 				C86B05270671AA6E00DD9006 /* CoreServices.framework in Frameworks */,
 				F28CFBFD0A3EC0AF000ABFF5 /* ApplicationServices.framework in Frameworks */,
 				F28CFC030A3EC0C6000ABFF5 /* QuickLook.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ACB9DA6A0BB8D914009491BF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ACB9DA8F0BB8DA41009491BF /* ApplicationServices.framework in Frameworks */,
+				ACB9DA900BB8DA42009491BF /* CoreFoundation.framework in Frameworks */,
+				ACB9DA910BB8DA43009491BF /* CoreServices.framework in Frameworks */,
+				ACB9DA9C0BB8DD11009491BF /* Carbon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -63,6 +83,7 @@
 		089C1671FE841209C02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				ACB9DA9B0BB8DD11009491BF /* Carbon.framework */,
 				F28CFC020A3EC0C6000ABFF5 /* QuickLook.framework */,
 				F28CFBFC0A3EC0AF000ABFF5 /* ApplicationServices.framework */,
 				C86B05260671AA6E00DD9006 /* CoreServices.framework */,
@@ -88,6 +109,7 @@
 				08FB77B6FE84183AC02AAC07 /* main.c */,
 				AC9E0D3E0B6BFB0B005ECDCE /* common.h */,
 				AC0D9CC10B6BFD15006BCA29 /* common.mm */,
+				ACB9DA800BB8D98C009491BF /* test.mm */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -96,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				8D576316048677EA00EA77CD /* neopeek.qlgenerator */,
+				ACB9DA6C0BB8D914009491BF /* Standalone Preview Extraction */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -134,6 +157,22 @@
 			productReference = 8D576316048677EA00EA77CD /* neopeek.qlgenerator */;
 			productType = "com.apple.product-type.bundle";
 		};
+		ACB9DA6B0BB8D914009491BF /* Standalone Preview Extraction */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = ACB9DA770BB8D91B009491BF /* Build configuration list for PBXNativeTarget "Standalone Preview Extraction" */;
+			buildPhases = (
+				ACB9DA690BB8D914009491BF /* Sources */,
+				ACB9DA6A0BB8D914009491BF /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Standalone Preview Extraction";
+			productName = "Standalone Preview Extraction";
+			productReference = ACB9DA6C0BB8D914009491BF /* Standalone Preview Extraction */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -148,6 +187,7 @@
 			shouldCheckCompatibility = 1;
 			targets = (
 				8D57630D048677EA00EA77CD /* neopeek */,
+				ACB9DA6B0BB8D914009491BF /* Standalone Preview Extraction */,
 			);
 		};
 /* End PBXProject section */
@@ -182,6 +222,15 @@
 				2C05A19C06CAA52B00D84F6F /* GeneratePreviewForURL.c in Sources */,
 				61E3BCFB0870B4F2002186A0 /* GenerateThumbnailForURL.c in Sources */,
 				AC0D9CC20B6BFD15006BCA29 /* common.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		ACB9DA690BB8D914009491BF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ACB9DA810BB8D98C009491BF /* test.mm in Sources */,
+				ACB9DA830BB8D9A0009491BF /* common.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -255,6 +304,47 @@
 			};
 			name = Release;
 		};
+		ACB9DA780BB8D91B009491BF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = "Standalone Preview Extraction";
+				ZERO_LINK = NO;
+			};
+			name = Debug;
+		};
+		ACB9DA790BB8D91B009491BF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = "Standalone Preview Extraction";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -272,6 +362,15 @@
 			buildConfigurations = (
 				2CA326230896AD4900168862 /* Debug */,
 				2CA326240896AD4900168862 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		ACB9DA770BB8D91B009491BF /* Build configuration list for PBXNativeTarget "Standalone Preview Extraction" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ACB9DA780BB8D91B009491BF /* Debug */,
+				ACB9DA790BB8D91B009491BF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

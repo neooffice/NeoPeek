@@ -90,8 +90,6 @@ extern "C" CGImageRef GetPreviewImageForOD(CFURLRef docURL)
 	
 	// free memory
 	
-	CFRelease(imageData);
-	CFRelease(pngData);
 	CFRelease(filePath);
 	
 	return(toReturn);
@@ -131,9 +129,7 @@ static OSErr ExtractZipArchiveContent(CFStringRef pathToArchive, const char *fil
 	char *openCmd=new char[strlen(kOpenSubfileCmd)+strlen((char *)filePath)+strlen(fileToExtract)+1];
 	memset(openCmd, '\0', strlen(kOpenSubfileCmd)+strlen((char *)filePath)+strlen(fileToExtract)+1);
 	sprintf(openCmd, kOpenSubfileCmd, filePath, fileToExtract);
-	
-	fprintf(stderr, "%s\n", openCmd);
-	
+		
 	FILE *f=popen(openCmd, "r");
 	if(!f)
 	{
@@ -146,9 +142,12 @@ static OSErr ExtractZipArchiveContent(CFStringRef pathToArchive, const char *fil
 	while(fread(&c, 1, 1, f)==1)
 		CFDataAppendBytes(fileContents, &c, 1);
 	
-	pclose(f);
+	fclose(f);
 	delete[] openCmd;
 	delete[] filePath;
+	
+	if(CFDataGetLength(fileContents) < 28)
+		return(-100);
 	
 	return(noErr);
 }

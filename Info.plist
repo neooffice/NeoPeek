@@ -50,7 +50,7 @@
     <!-- Change following property to <true/> if the generators supports
          multiple concurrent requests -->
     <key>QLSupportsConcurrentRequests</key>
-    <false/>
+    <true/>
     <!-- Change following property to <true/> if the generators needs
          to be run on main thread -->
     <key>QLNeedsToBeRunInMainThread</key>
