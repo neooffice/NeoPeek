@@ -40,6 +40,7 @@
 // 1/27/07
 
 #include "common.h"
+#include <stdio.h>
 
 ///// constants ////
 
@@ -65,6 +66,8 @@ static OSErr ExtractZipArchiveContent(CFStringRef pathToArchive, const char *fil
  */
 extern "C" CGImageRef GetPreviewImageForOD(CFURLRef docURL)
 {
+	fprintf(stderr, "NeoPeek: GetPreviewImageForOD invoked\n");
+	
 	// check if the URL is a local file
 	
 	CFStringRef filePath=CFURLCopyPath(docURL);
@@ -76,6 +79,9 @@ extern "C" CGImageRef GetPreviewImageForOD(CFURLRef docURL)
 	CFMutableDataRef pngData=CFDataCreateMutable(kCFAllocatorDefault, 0);
 	if(ExtractZipArchiveContent(filePath, kODThumbnailPath, pngData)!=noErr)
 	{
+		CFStringRef asString=CFURLGetString(docURL);
+		const char *asCString=CFStringGetCStringPtr(asString, kCFStringEncodingASCII);
+		fprintf(stderr, "NeoPeek: No thumbnail png content available! for '%s'\n", ((asCString) ? asCString : "<URL not convertible>"));
 		CFRelease(filePath);
 		CFRelease(pngData);
 		return(NULL);
