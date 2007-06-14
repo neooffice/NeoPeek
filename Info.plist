@@ -12,6 +12,9 @@
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>org.oasis.opendocument.text</string>
+				<string>org.oasis.opendocument.spreadsheet</string>
+				<string>org.oasis.opendocument.presentation</string>
+				<string>org.oasis.opendocument.graphics</string>
 			</array>
 		</dict>
 	</array>

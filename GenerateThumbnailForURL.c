@@ -51,14 +51,15 @@
 OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thumbnail, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options, CGSize maxSize)
 {
 	OSStatus toReturn = noErr;
-		
-    if(CFStringCompare(contentTypeUTI, CFSTR("org.oasis.opendocument.text"), 0)==kCFCompareEqualTo)
-	{
+	
+	if(ODHasPreviewImage(url)) {
 		CGImageRef odPreviewImage=GetPreviewImageForOD(url);
 		if(odPreviewImage)
 		{
 			QLThumbnailRequestSetImage(thumbnail, odPreviewImage, NULL);
 			CFRelease(odPreviewImage); // QuickLook should retain the image if it needs it
+			
+			return(noErr);
 		}
 	}
     

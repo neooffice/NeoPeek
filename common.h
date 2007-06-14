@@ -47,14 +47,39 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
- 
+
 /**
- * Extract the thumbnail image from an OpenDocument text file into a CGImage
+ * Query if the specified document contains a preview image.
+ *
+ * @param docURL	URL to document to query.
+ * @return true if document contains a PNG preview image, false if not
+ */
+bool ODHasPreviewImage(CFURLRef docURL);
+
+/**
+ * Extract the thumbnail image from an OpenDocument file into a CGImage
  *
  * @param docURL	URL to document to generate preview.  Must be a local file.
- * @return CGImage with preview contents, or NULL on failure.
+ * @return CGImage with preview contents, or NULL on failure.  Ownership
+ *	follows the Create rule.
  */
 CGImageRef GetPreviewImageForOD(CFURLRef docURL);
+
+/**
+ * Query if the specified document contains a PDF preview data representation.
+ *
+ * @param docURL	URL of document to query
+ * @return true if document contains a PDF preview image, false if not
+ */
+bool ODHasPreviewPDF(CFURLRef docURL);
+
+/**
+ * Extract the thumbnail PDF data from an OpenDocument file into a CFDataRef.
+ *
+ * @param docURL	URL of document to query.
+ * @return PDF image, or NULL if document does not contain a valid PDF image.
+ */
+CFDataRef GetPreviewPDFForOD(CFURLRef docURL);
 
 #ifdef __cplusplus
 }

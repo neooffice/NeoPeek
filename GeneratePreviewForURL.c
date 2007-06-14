@@ -49,8 +49,16 @@
 
 OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options)
 {	
-	if(CFStringCompare(contentTypeUTI, CFSTR("org.oasis.opendocument.text"), 0)==kCFCompareEqualTo)
-	{
+	if(ODHasPreviewPDF(url)) {
+		CFDataRef pdfData=GetPreviewPDFForOD(url);
+		if(pdfData)
+		{
+			QLPreviewRequestSetDataRepresentation(preview, pdfData, kUTTypePDF, NULL);
+			return(noErr);
+		}
+	}
+	
+	if(ODHasPreviewImage(url)) {
 		CGImageRef odPreviewImage=GetPreviewImageForOD(url);
 		if(odPreviewImage)
 		{
@@ -65,7 +73,9 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 				CFRelease(drawRef);
 			}
 			CFRelease(odPreviewImage);
-		}
+			
+			return(noErr);
+		}		
 	}
 	
 	return noErr;
