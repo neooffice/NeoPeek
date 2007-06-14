@@ -84,7 +84,7 @@ extern "C" bool ODHasPreviewImage(CFURLRef docURL)
 {
 	// check if the URL is a local file
 	
-	CFStringRef filePath=CFURLCopyPath(docURL);
+	CFStringRef filePath=CFURLCopyFileSystemPath(docURL, kCFURLPOSIXPathStyle);
 	if(!filePath)
 		return(false);
 	
@@ -106,11 +106,9 @@ extern "C" bool ODHasPreviewImage(CFURLRef docURL)
  */
 extern "C" CGImageRef GetPreviewImageForOD(CFURLRef docURL)
 {
-	fprintf(stderr, "NeoPeek: GetPreviewImageForOD invoked\n");
-	
 	// check if the URL is a local file
 	
-	CFStringRef filePath=CFURLCopyPath(docURL);
+	CFStringRef filePath=CFURLCopyFileSystemPath(docURL, kCFURLPOSIXPathStyle);
 	if(!filePath)
 		return(NULL);
 	
@@ -151,7 +149,7 @@ extern "C" bool ODHasPreviewPDF(CFURLRef docURL)
 {
 	// check if the URL is a local file
 	
-	CFStringRef filePath=CFURLCopyPath(docURL);
+	CFStringRef filePath=CFURLCopyFileSystemPath(docURL, kCFURLPOSIXPathStyle);
 	if(!filePath)
 		return(false);
 	
@@ -159,7 +157,7 @@ extern "C" bool ODHasPreviewPDF(CFURLRef docURL)
 	
 	std::string fileListing;
 	OSErr theErr=ExtractZipArchiveListing(filePath, fileListing);
-	
+		
 	CFRelease(filePath);
 	
 	if(theErr!=noErr)
@@ -178,7 +176,7 @@ extern "C" CFDataRef GetPreviewPDFForOD(CFURLRef docURL)
 {
 	// check if the URL is a local file
 	
-	CFStringRef filePath=CFURLCopyPath(docURL);
+	CFStringRef filePath=CFURLCopyFileSystemPath(docURL, kCFURLPOSIXPathStyle);
 	if(!filePath)
 		return(NULL);
 	
@@ -240,7 +238,9 @@ static OSErr ExtractZipArchiveListing(CFStringRef pathToArchive, std::string& fi
 	
 	unsigned char c;
 	while(fread(&c, 1, 1, f)==1)
+	{
 		fileListing+=c;
+	}
 	
 	fclose(f);
 	delete[] openCmd;
