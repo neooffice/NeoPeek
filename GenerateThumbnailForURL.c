@@ -51,6 +51,23 @@
 OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thumbnail, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options, CGSize maxSize)
 {
 	OSStatus toReturn = noErr;
+	bool isDraw=false;
+	
+	// check if this is a draw document.  We will suppress explicit background drawing for Draw,
+	// leaving backgrounds as transparent unless put in explicitly by rects
+	
+	if((CFStringCompare(contentTypeUTI, CFSTR("org.oasis.opendocument.graphics"), 0)==kCFCompareEqualTo) || (CFStringCompare(contentTypeUTI, CFSTR("org.oasis-open.opendocument.graphics"), 0)==kCFCompareEqualTo))
+		isDraw=true;
+	
+	// the bitmap PNGs bite, so first check if we have the PDF thumbnail in our
+	// document.  If so, render its first page into the thumbnail.
+	
+	if(ODHasPreviewPDF(url)) {
+		if(DrawThumbnailPDFPageOneForOD(url, thumbnail, !isDraw))
+			return(noErr);
+	}
+	
+	// fallback onto the PNG, if available
 	
 	if(ODHasPreviewImage(url)) {
 		CGImageRef odPreviewImage=GetPreviewImageForOD(url);

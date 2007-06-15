@@ -48,7 +48,7 @@
    ----------------------------------------------------------------------------- */
 
 OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options)
-{	
+{
 	if(ODHasPreviewPDF(url)) {
 		CFDataRef pdfData=GetPreviewPDFForOD(url);
 		if(pdfData)

@@ -43,6 +43,7 @@
 
 #include <ApplicationServices/ApplicationServices.h>
 #include <CoreFoundation/CoreFoundation.h>
+#include <QuickLook/QuickLook.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -80,6 +81,16 @@ bool ODHasPreviewPDF(CFURLRef docURL);
  * @return PDF image, or NULL if document does not contain a valid PDF image.
  */
 CFDataRef GetPreviewPDFForOD(CFURLRef docURL);
+
+/**
+ * Draw the first page of a PDF into a thumbnail CG context.
+ *
+ * @param docURL				URL of document to query
+ * @param thumbRequest			request where teh thunbmail should be output
+ * @param drawWhiteBackground	true to draw a white background, false to suppress
+ * @return true if thumbnail was drawn, false if not
+ */
+bool DrawThumbnailPDFPageOneForOD(CFURLRef docURL, QLThumbnailRequestRef thumbRequest, bool drawWhiteBackground);
 
 #ifdef __cplusplus
 }

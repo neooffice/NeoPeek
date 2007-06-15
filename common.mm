@@ -42,6 +42,8 @@
 #include "common.h"
 #include <stdio.h>
 #include <string>
+#include <ApplicationServices/ApplicationServices.h>
+#include <QuickLook/QuickLook.h>
 
 ///// constants ////
 
@@ -198,6 +200,77 @@ extern "C" CFDataRef GetPreviewPDFForOD(CFURLRef docURL)
 	CFRelease(filePath);
 	
 	return(pngData);
+}
+
+/**
+ * Draw the first page of a PDF into a thumbnail CG context.
+ *
+ * @param docURL				URL of document to query
+ * @param thumbRequest			request where teh thunbmail should be output
+ * @param drawWhiteBackground	true to draw a white background, false to suppress
+ * @return true if thumbnail was drawn, false if not
+ */
+extern "C" bool DrawThumbnailPDFPageOneForOD(CFURLRef docURL, QLThumbnailRequestRef thumbRequest, bool drawWhiteBackground)
+{
+	// check if the URL is a local file
+	
+	CFStringRef filePath=CFURLCopyFileSystemPath(docURL, kCFURLPOSIXPathStyle);
+	if(!filePath)
+		return(NULL);
+	
+	// extract the thumbnail image data from the file
+	
+	CFMutableDataRef pdfData=CFDataCreateMutable(kCFAllocatorDefault, 0);
+	if(ExtractZipArchiveContent(filePath, kODPDFPath, pdfData)!=noErr)
+	{
+		CFStringRef asString=CFURLGetString(docURL);
+		const char *asCString=CFStringGetCStringPtr(asString, kCFStringEncodingASCII);
+		fprintf(stderr, "NeoPeek: No thumbnail PDF content available! for '%s'\n", ((asCString) ? asCString : "<URL not convertible>"));
+		CFRelease(filePath);
+		CFRelease(pdfData);
+		return(NULL);
+	}
+	
+	// construct the representation of the PDF and draw the first page into the thumbnail
+	
+	bool toReturn=false;
+	
+	CGDataProviderRef pdfDataProvider=CGDataProviderCreateWithCFData(pdfData);
+	CGPDFDocumentRef theDoc=CGPDFDocumentCreateWithProvider(pdfDataProvider);
+	if(theDoc)
+	{
+		if(CGPDFDocumentGetNumberOfPages(theDoc))
+		{
+			CGPDFPageRef pageZero=CGPDFDocumentGetPage(theDoc, 1);
+			if(pageZero)
+			{
+				CGRect pageRect=CGPDFPageGetBoxRect(pageZero, kCGPDFMediaBox);
+				CGContextRef thumbnailContext=QLThumbnailRequestCreateContext(thumbRequest, pageRect.size, true, NULL);
+				if(drawWhiteBackground)
+				{
+					CGRect bgRect;
+					bgRect.size=pageRect.size;
+					bgRect.origin.x=bgRect.origin.y=0;
+					CGContextSetRGBFillColor(thumbnailContext, 1.0, 1.0, 1.0, 1.0);
+					CGContextFillRect(thumbnailContext, bgRect);
+				}
+				CGContextDrawPDFPage(thumbnailContext, pageZero);
+				QLThumbnailRequestFlushContext(thumbRequest, thumbnailContext);
+				CFRelease(thumbnailContext);
+			}
+			toReturn=true;
+		}
+		
+		CGPDFDocumentRelease(theDoc);
+	}
+	
+	// free memory
+	
+	CFRelease(pdfDataProvider);
+	CFRelease(pdfData);
+	CFRelease(filePath);
+	
+	return(toReturn);
 }
 
 /**
