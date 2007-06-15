@@ -14,11 +14,11 @@
  *
  *         - GNU General Public License Version 2.1
  *
- *  Edward Peterlin, 2005
+ *  Edward Peterlin, 2007
  *
- *  GNU Lesser Public License Version 2.1
+ *  GNU General Public License Version 2.1
  *  =============================================
- *  Copyright 2005 by Edward Peterlin (OPENSTEP@neooffice.org)
+ *  Copyright 2007 by Edward Peterlin (OPENSTEP@neooffice.org)
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public
