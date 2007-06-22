@@ -43,6 +43,7 @@
 
 #include <ApplicationServices/ApplicationServices.h>
 #include <CoreFoundation/CoreFoundation.h>
+#include <CoreFoundation/CFPlugInCOM.h>
 #include <QuickLook/QuickLook.h>
 
 #ifdef __cplusplus
@@ -91,6 +92,14 @@ CFDataRef GetPreviewPDFForOD(CFURLRef docURL);
  * @return true if thumbnail was drawn, false if not
  */
 bool DrawThumbnailPDFPageOneForOD(CFURLRef docURL, QLThumbnailRequestRef thumbRequest, bool drawWhiteBackground);
+
+/**
+ * Get a reference to the QuickLook plugin interface for the Apple Text.qlgenerator
+ * plugin.
+ *
+ * @return interface handle, or NULL if the generator could not be loaded.
+ */
+QLGeneratorInterfaceStruct ** GetAppleTextQLGenerator(void);
 
 #ifdef __cplusplus
 }

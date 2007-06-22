@@ -38,7 +38,6 @@
 
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreServices/CoreServices.h>
-#include <QuickLook/QuickLook.h>
 #include "common.h"
 
 /* -----------------------------------------------------------------------------
@@ -49,6 +48,15 @@
 
 OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options)
 {
+	bool isWriter=false;
+	
+	// check if this is a writer document.  For writer documents that do not have the
+	// PDF extensions, we'll default to the Apple QuickLook generator which produces
+	// more meaningful results than the low-quality PNG.
+	
+	if((CFStringCompare(contentTypeUTI, CFSTR("org.oasis.opendocument.text"), 0)==kCFCompareEqualTo) || (CFStringCompare(contentTypeUTI, CFSTR("org.oasis-open.opendocument.text"), 0)==kCFCompareEqualTo))
+		isWriter=true;
+	
 	if(ODHasPreviewPDF(url)) {
 		CFDataRef pdfData=GetPreviewPDFForOD(url);
 		if(pdfData)
@@ -57,6 +65,18 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 			return(noErr);
 		}
 	}
+	
+	// if we get here, we do not have a PDF embedded within the document.  Apple provides a default
+	// QuickLook plugin for Writer documents.  While only extracting text and basic tables, it
+	// still provides better quality than the PNG.
+	
+	if(isWriter && GetAppleTextQLGenerator()) {
+		OSStatus appleRetVal=(*GetAppleTextQLGenerator())->GeneratePreviewForURL(GetAppleTextQLGenerator(), preview, url, contentTypeUTI, options);
+		if(appleRetVal==noErr)
+			return(noErr);
+	}
+	
+	// fallback on the PNG embedded within the document.
 	
 	if(ODHasPreviewImage(url)) {
 		CGImageRef odPreviewImage=GetPreviewImageForOD(url);

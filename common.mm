@@ -44,8 +44,14 @@
 #include <string>
 #include <ApplicationServices/ApplicationServices.h>
 #include <QuickLook/QuickLook.h>
+#include <CoreServices/CoreServices.h>
 
 ///// constants ////
+
+/**
+ * Path to Apple QuickLook plugin for handling Writer documents
+ */
+#define kAppleTextQLGeneratorPath	"/System/Library/Frameworks/QuickLook.framework/Resources/Generators/Text.qlgenerator"
 
 /**
  * Command used by popen() to construct a file handle extracting a given
@@ -377,4 +383,54 @@ static OSErr ExtractZipArchiveContent(CFStringRef pathToArchive, const char *fil
 		return(-100);
 	
 	return(noErr);
+}
+
+/**
+ * Get a reference to the QuickLook plugin interface for the Apple Text.qlgenerator
+ * plugin.
+ *
+ * @return interface handle, or NULL if the generator could not be loaded.
+ */
+QLGeneratorInterfaceStruct ** GetAppleTextQLGenerator(void)
+{
+	static QLGeneratorInterfaceStruct **interface=NULL;
+	
+	if(interface)
+		return(interface);
+	
+	CFURLRef pluginURL=CFURLCreateWithFileSystemPath(kCFAllocatorDefault, CFSTR(kAppleTextQLGeneratorPath), kCFURLPOSIXPathStyle, TRUE);
+	CFPlugInRef generatorPlugin=CFPlugInCreate(kCFAllocatorDefault, pluginURL);
+	if(generatorPlugin)
+	{
+		// get factory for the qlgenerator plugin type
+		
+		CFArrayRef qlgeneratorFactories=CFPlugInFindFactoriesForPlugInTypeInPlugIn(kQLGeneratorTypeID, generatorPlugin);
+		if(qlgeneratorFactories && CFArrayGetCount(qlgeneratorFactories))
+		{
+			for(CFIndex i=0; i < CFArrayGetCount(qlgeneratorFactories); i++)
+			{
+				CFUUIDRef theFactory=(CFUUIDRef)CFArrayGetValueAtIndex(qlgeneratorFactories, i);
+				IUnknownVTbl **iUnknown=(IUnknownVTbl **)CFPlugInInstanceCreate(kCFAllocatorDefault, theFactory, kQLGeneratorTypeID);
+				if(iUnknown)
+				{
+					// bootstrap off of IUnknown to get the function pointers for the QuickLook callbacks
+					
+					(*iUnknown)->QueryInterface(iUnknown, CFUUIDGetUUIDBytes(kQLGeneratorCallbacksInterfaceID), (LPVOID *)&interface);
+					(*iUnknown)->Release(iUnknown);
+					
+					// if we found the correct interface, stop searching remaining factories.  We don't need them!
+					
+					if(interface)
+						break;
+				}
+			}
+		}
+		
+		// NOTE:  We don't release the plugin;  we never release the plugin since we'll keep the interface statically
+		// in memory so we don't need to relocate it.  As we continue to use the code, we need to keep the plugin
+		// in memory.
+	}
+	
+	CFRelease(pluginURL);
+	return(interface);
 }
