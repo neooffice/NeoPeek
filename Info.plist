@@ -17,8 +17,12 @@
 				<string>org.oasis-open.opendocument.graphics</string>
 				<string>org.oasis.opendocument.text</string>
 				<string>org.oasis.opendocument.spreadsheet</string>
-				<string>org.oasis.openedocument.presentation</string>
+				<string>org.oasis.opendocument.presentation</string>
 				<string>org.oasis.opendocument.graphics</string>
+				<string>org.neooffice.writer</string>
+				<string>org.neooffice.calc</string>
+				<string>org.neooffice.impress</string>
+				<string>org.neooffice.draw</string>
 			</array>
 		</dict>
 	</array>
