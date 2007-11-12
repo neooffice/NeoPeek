@@ -251,20 +251,25 @@ extern "C" bool DrawThumbnailPDFPageOneForOD(CFURLRef docURL, QLThumbnailRequest
 			if(pageZero)
 			{
 				CGRect pageRect=CGPDFPageGetBoxRect(pageZero, kCGPDFMediaBox);
-				CGContextRef thumbnailContext=QLThumbnailRequestCreateContext(thumbRequest, pageRect.size, true, NULL);
-				if(drawWhiteBackground)
+				CGContextRef thumbnailContext=QLThumbnailRequestCreateContext(thumbRequest, pageRect.size, false, NULL);
+				if (thumbnailContext)
 				{
-					CGRect bgRect;
-					bgRect.size=pageRect.size;
-					bgRect.origin.x=bgRect.origin.y=0;
-					CGContextSetRGBFillColor(thumbnailContext, 1.0, 1.0, 1.0, 1.0);
-					CGContextFillRect(thumbnailContext, bgRect);
+					if(drawWhiteBackground)
+					{
+						CGRect bgRect;
+						bgRect.origin.x=0;
+						bgRect.origin.y=0;
+						bgRect.size.width=pageRect.size.width;
+						bgRect.size.height=pageRect.size.height;
+						CGContextSetRGBFillColor(thumbnailContext, 1.0, 1.0, 1.0, 1.0);
+						CGContextFillRect(thumbnailContext, bgRect);
+					}
+					CGContextDrawPDFPage(thumbnailContext, pageZero);
+					QLThumbnailRequestFlushContext(thumbRequest, thumbnailContext);
+					CFRelease(thumbnailContext);
+					toReturn=true;
 				}
-				CGContextDrawPDFPage(thumbnailContext, pageZero);
-				QLThumbnailRequestFlushContext(thumbRequest, thumbnailContext);
-				CFRelease(thumbnailContext);
 			}
-			toReturn=true;
 		}
 		
 		CGPDFDocumentRelease(theDoc);

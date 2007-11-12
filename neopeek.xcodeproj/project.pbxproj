@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 43;
+	objectVersion = 44;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -247,7 +247,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOTS = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 			};
 			name = Debug;
 		};
@@ -264,7 +264,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
-				SDKROOTS = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 			};
 			name = Release;
 		};

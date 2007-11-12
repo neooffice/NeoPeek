@@ -91,8 +91,28 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 		CGImageRef odPreviewImage=GetPreviewImageForOD(url);
 		if(odPreviewImage)
 		{
-			QLThumbnailRequestSetImage(thumbnail, odPreviewImage, NULL);
-			CFRelease(odPreviewImage); // QuickLook should retain the image if it needs it
+			CGSize imageSize;
+			imageSize.width = CGImageGetWidth(odPreviewImage);
+			imageSize.height = CGImageGetHeight(odPreviewImage);
+			CGContextRef thumbnailContext=QLThumbnailRequestCreateContext(thumbnail, imageSize, true, NULL);
+			if (thumbnailContext)
+			{
+				CGRect bgRect;
+				bgRect.origin.x=0;
+				bgRect.origin.y=0;
+				bgRect.size.width=imageSize.width;
+				bgRect.size.height=imageSize.height;
+				if(!isDraw)
+				{
+					CGContextSetRGBFillColor(thumbnailContext, 1.0, 1.0, 1.0, 1.0);
+					CGContextFillRect(thumbnailContext, bgRect);
+				}
+				CGContextDrawImage(thumbnailContext, bgRect, odPreviewImage);
+				QLThumbnailRequestFlushContext(thumbnail, thumbnailContext);
+				CFRelease(thumbnailContext);
+			}
+			
+			CFRelease(odPreviewImage);
 			
 			return(noErr);
 		}
