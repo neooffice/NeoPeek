@@ -326,7 +326,7 @@ static OSErr ExtractZipArchiveListing(CFStringRef pathToArchive, std::string& fi
 		fileListing+=c;
 	}
 	
-	fclose(f);
+	pclose(f);
 	delete[] openCmd;
 	delete[] filePath;
 	
@@ -380,7 +380,7 @@ static OSErr ExtractZipArchiveContent(CFStringRef pathToArchive, const char *fil
 	while(fread(&c, 1, 1, f)==1)
 		CFDataAppendBytes(fileContents, &c, 1);
 	
-	fclose(f);
+	pclose(f);
 	delete[] openCmd;
 	delete[] filePath;
 	
