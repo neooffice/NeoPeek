@@ -8,6 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		2C05A19C06CAA52B00D84F6F /* GeneratePreviewForURL.c in Sources */ = {isa = PBXBuildFile; fileRef = 2C05A19B06CAA52B00D84F6F /* GeneratePreviewForURL.c */; };
+		3F8E0187108B81FF00D8B12F /* crypt.h in Headers */ = {isa = PBXBuildFile; fileRef = 3F8E0181108B81FF00D8B12F /* crypt.h */; };
+		3F8E0188108B81FF00D8B12F /* ioapi.c in Sources */ = {isa = PBXBuildFile; fileRef = 3F8E0182108B81FF00D8B12F /* ioapi.c */; };
+		3F8E0189108B81FF00D8B12F /* ioapi.h in Headers */ = {isa = PBXBuildFile; fileRef = 3F8E0183108B81FF00D8B12F /* ioapi.h */; };
+		3F8E018A108B81FF00D8B12F /* miniunz.c in Sources */ = {isa = PBXBuildFile; fileRef = 3F8E0184108B81FF00D8B12F /* miniunz.c */; };
+		3F8E018B108B81FF00D8B12F /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = 3F8E0185108B81FF00D8B12F /* unzip.c */; };
+		3F8E018C108B81FF00D8B12F /* unzip.h in Headers */ = {isa = PBXBuildFile; fileRef = 3F8E0186108B81FF00D8B12F /* unzip.h */; };
+		3F8E018E108B822100D8B12F /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F8E018D108B822100D8B12F /* libz.dylib */; };
 		61E3BCFB0870B4F2002186A0 /* GenerateThumbnailForURL.c in Sources */ = {isa = PBXBuildFile; fileRef = 61E3BCFA0870B4F2002186A0 /* GenerateThumbnailForURL.c */; };
 		8D576312048677EA00EA77CD /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 08FB77B6FE84183AC02AAC07 /* main.c */; settings = {ATTRIBUTES = (); }; };
 		8D576314048677EA00EA77CD /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */; };
@@ -25,6 +32,13 @@
 		08FB77B6FE84183AC02AAC07 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		0AA1909FFE8422F4C02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		2C05A19B06CAA52B00D84F6F /* GeneratePreviewForURL.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = GeneratePreviewForURL.c; sourceTree = "<group>"; };
+		3F8E0181108B81FF00D8B12F /* crypt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = crypt.h; path = minizip/crypt.h; sourceTree = "<group>"; };
+		3F8E0182108B81FF00D8B12F /* ioapi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ioapi.c; path = minizip/ioapi.c; sourceTree = "<group>"; };
+		3F8E0183108B81FF00D8B12F /* ioapi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ioapi.h; path = minizip/ioapi.h; sourceTree = "<group>"; };
+		3F8E0184108B81FF00D8B12F /* miniunz.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = miniunz.c; path = minizip/miniunz.c; sourceTree = "<group>"; };
+		3F8E0185108B81FF00D8B12F /* unzip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = unzip.c; path = minizip/unzip.c; sourceTree = "<group>"; };
+		3F8E0186108B81FF00D8B12F /* unzip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = unzip.h; path = minizip/unzip.h; sourceTree = "<group>"; };
+		3F8E018D108B822100D8B12F /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		61E3BCFA0870B4F2002186A0 /* GenerateThumbnailForURL.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = GenerateThumbnailForURL.c; sourceTree = "<group>"; };
 		8D576316048677EA00EA77CD /* neopeek.qlgenerator */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = neopeek.qlgenerator; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D576317048677EA00EA77CD /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -48,6 +62,7 @@
 				F28CFBFD0A3EC0AF000ABFF5 /* ApplicationServices.framework in Frameworks */,
 				F28CFC030A3EC0C6000ABFF5 /* QuickLook.framework in Frameworks */,
 				AC6B5B710C230CBC00A3595C /* Quartz.framework in Frameworks */,
+				3F8E018E108B822100D8B12F /* libz.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -57,6 +72,12 @@
 		089C166AFE841209C02AAC07 /* neopeek */ = {
 			isa = PBXGroup;
 			children = (
+				3F8E0181108B81FF00D8B12F /* crypt.h */,
+				3F8E0182108B81FF00D8B12F /* ioapi.c */,
+				3F8E0183108B81FF00D8B12F /* ioapi.h */,
+				3F8E0184108B81FF00D8B12F /* miniunz.c */,
+				3F8E0185108B81FF00D8B12F /* unzip.c */,
+				3F8E0186108B81FF00D8B12F /* unzip.h */,
 				08FB77AFFE84173DC02AAC07 /* Source */,
 				089C167CFE841241C02AAC07 /* Resources */,
 				089C1671FE841209C02AAC07 /* External Frameworks and Libraries */,
@@ -68,6 +89,7 @@
 		089C1671FE841209C02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				3F8E018D108B822100D8B12F /* libz.dylib */,
 				AC6B5B700C230CBC00A3595C /* Quartz.framework */,
 				ACB9DA9B0BB8DD11009491BF /* Carbon.framework */,
 				F28CFC020A3EC0C6000ABFF5 /* QuickLook.framework */,
@@ -116,6 +138,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				AC9E0D3F0B6BFB0B005ECDCE /* common.h in Headers */,
+				3F8E0187108B81FF00D8B12F /* crypt.h in Headers */,
+				3F8E0189108B81FF00D8B12F /* ioapi.h in Headers */,
+				3F8E018C108B81FF00D8B12F /* unzip.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -189,6 +214,9 @@
 				2C05A19C06CAA52B00D84F6F /* GeneratePreviewForURL.c in Sources */,
 				61E3BCFB0870B4F2002186A0 /* GenerateThumbnailForURL.c in Sources */,
 				AC0D9CC20B6BFD15006BCA29 /* common.mm in Sources */,
+				3F8E0188108B81FF00D8B12F /* ioapi.c in Sources */,
+				3F8E018A108B81FF00D8B12F /* miniunz.c in Sources */,
+				3F8E018B108B81FF00D8B12F /* unzip.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -244,6 +272,7 @@
 					ppc,
 					x86_64,
 				);
+				GCC_PREPROCESSOR_DEFINITIONS = unix;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
@@ -261,6 +290,7 @@
 					x86_64,
 				);
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_PREPROCESSOR_DEFINITIONS = unix;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;

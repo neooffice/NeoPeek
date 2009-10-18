@@ -40,8 +40,8 @@
 // 1/27/07
 
 #include "common.h"
+#include "minizip/unzip.h"
 #include <stdio.h>
-#include <string>
 #include <ApplicationServices/ApplicationServices.h>
 #include <QuickLook/QuickLook.h>
 #include <CoreServices/CoreServices.h>
@@ -53,17 +53,7 @@
  */
 #define kAppleTextQLGeneratorPath	"/System/Library/Frameworks/QuickLook.framework/Resources/Generators/Text.qlgenerator"
 
-/**
- * Command used by popen() to construct a file handle extracting a given
- * file out of a zip archive
- */
-#define kOpenSubfileCmd		"/usr/bin/unzip -p \"%s\" \"%s\""
-
-/**
- * Command used by popen() to construct a listing of the contents of
- * a given zip archive.
- */
-#define kListCmd		"/usr/bin/unzip -l \"%s\""
+#define UNZIP_BUFFER_SIZE 4096
 
 /**
  * Path to the thumnail preview in OpenDocument formatted files
@@ -78,7 +68,7 @@
 ///// prototypes /////
 
 static OSErr ExtractZipArchiveContent(CFStringRef pathToArchive, const char *fileToExtract, CFMutableDataRef fileContents);
-static OSErr ExtractZipArchiveListing(CFStringRef pathToArchive, std::string& fileListing);
+static bool ExtractZipArchiveHasFile(CFStringRef pathToArchive, const char *fileToExtract);
 
 ///// functions /////
 
@@ -90,23 +80,20 @@ static OSErr ExtractZipArchiveListing(CFStringRef pathToArchive, std::string& fi
  */
 extern "C" bool ODHasPreviewImage(CFURLRef docURL)
 {
+	bool ret = false;
+
 	// check if the URL is a local file
 	
 	CFStringRef filePath=CFURLCopyFileSystemPath(docURL, kCFURLPOSIXPathStyle);
 	if(!filePath)
-		return(false);
+		return(ret);
 	
 	// get listing of contents in the file
 	
-	std::string fileListing;
-	OSErr theErr=ExtractZipArchiveListing(filePath, fileListing);
-	
+	ret=ExtractZipArchiveHasFile(filePath, kODThumbnailPath);
 	CFRelease(filePath);
-	
-	if(theErr!=noErr)
-		return(false);
-	
-	return(fileListing.find(kODThumbnailPath)!=std::string::npos);
+
+	return(ret);
 }
 
 /**
@@ -155,6 +142,8 @@ extern "C" CGImageRef GetPreviewImageForOD(CFURLRef docURL)
  */
 extern "C" bool ODHasPreviewPDF(CFURLRef docURL)
 {
+	bool ret = false;
+
 	// check if the URL is a local file
 	
 	CFStringRef filePath=CFURLCopyFileSystemPath(docURL, kCFURLPOSIXPathStyle);
@@ -163,15 +152,10 @@ extern "C" bool ODHasPreviewPDF(CFURLRef docURL)
 	
 	// get listing of contents in the file
 	
-	std::string fileListing;
-	OSErr theErr=ExtractZipArchiveListing(filePath, fileListing);
-		
+	ret=ExtractZipArchiveHasFile(filePath, kODPDFPath);
 	CFRelease(filePath);
-	
-	if(theErr!=noErr)
-		return(false);
-	
-	return(fileListing.find(kODPDFPath)!=std::string::npos);
+
+	return(ret);
 }
 
 /**
@@ -287,12 +271,14 @@ extern "C" bool DrawThumbnailPDFPageOneForOD(CFURLRef docURL, QLThumbnailRequest
 /**
  * Extract the listing of the contents of a zip archive.  Listing is in the format of unzip -l
  *
- * @param pathToArchive		path to the zipfile on disk to list
- * @param fileListing		string to fill with listing.
- * @return noErr if listing successful, else error code.
+ * @param pathToArchive		path to the zip archive on disk
+ * @param fileToExtract		file from the archive that should be extracted
+ * @return true	if the file exists in the zipfile
  */
-static OSErr ExtractZipArchiveListing(CFStringRef pathToArchive, std::string& fileListing)
+static bool ExtractZipArchiveHasFile(CFStringRef pathToArchive, const char *fileToExtract)
 {
+	bool ret = false;
+
 	// extract the path as UTF-8 for internationalization
 	
 	CFIndex numChars=CFStringGetLength(pathToArchive);
@@ -300,7 +286,7 @@ static OSErr ExtractZipArchiveListing(CFStringRef pathToArchive, std::string& fi
 	CFIndex numBytesUsed=0;
 	
 	if(!CFStringGetBytes(pathToArchive, rangeToConvert, kCFStringEncodingUTF8, 0, false, NULL, 0, &numBytesUsed))
-		return(-50);
+		return(ret);
 	UInt8 *filePath=new UInt8[numBytesUsed+1];
 	memset(filePath, '\0', numBytesUsed+1);
 	CFStringGetBytes(pathToArchive, rangeToConvert, kCFStringEncodingUTF8, 0, false, filePath, numBytesUsed+1, NULL);
@@ -308,29 +294,24 @@ static OSErr ExtractZipArchiveListing(CFStringRef pathToArchive, std::string& fi
 	// open the "content.xml" file living within the sxw and read it into
 	// a CFData structure for use with other CoreFoundation elements.
 	
-	char *openCmd=new char[strlen(kListCmd)+strlen((char *)filePath)+1];
-	memset(openCmd, '\0', strlen(kListCmd)+strlen((char *)filePath)+1);
-	sprintf(openCmd, kListCmd, filePath);
-		
-	FILE *f=popen(openCmd, "r");
-	if(!f)
+	unzFile f = unzOpen((const char *)filePath);
+	if (f)
 	{
-		delete[] filePath;
-		delete[] openCmd;
-		return(-50);
+		if (unzLocateFile(f, fileToExtract, 0) == UNZ_OK)
+		{
+			if (unzOpenCurrentFile(f) == UNZ_OK)
+			{
+				ret = true;
+				unzCloseCurrentFile(f);
+			}
+		}
+
+		unzClose(f);
 	}
-	
-	unsigned char c;
-	while(fread(&c, 1, 1, f)==1)
-	{
-		fileListing+=c;
-	}
-	
-	pclose(f);
-	delete[] openCmd;
+
 	delete[] filePath;
 	
-	return(noErr);
+	return(ret);
 }
 
 /**
@@ -339,7 +320,7 @@ static OSErr ExtractZipArchiveListing(CFStringRef pathToArchive, std::string& fi
  *
  * The file is attempted to be extracted using UTF8 encoding.
  *
- * @param pathToArhive		path to the zip archive on disk
+ * @param pathToArchive		path to the zip archive on disk
  * @param fileToExtract		file from the archive that should be extracted
  * @param fileContents		mutable data that should be filled with the
  *				contents of that subfile.  File content
@@ -349,6 +330,8 @@ static OSErr ExtractZipArchiveListing(CFStringRef pathToArchive, std::string& fi
  */
 static OSErr ExtractZipArchiveContent(CFStringRef pathToArchive, const char *fileToExtract, CFMutableDataRef fileContents)
 {
+	OSErr ret = -50;
+
 	// extract the path as UTF-8 for internationalization
 	
 	CFIndex numChars=CFStringGetLength(pathToArchive);
@@ -356,7 +339,7 @@ static OSErr ExtractZipArchiveContent(CFStringRef pathToArchive, const char *fil
 	CFIndex numBytesUsed=0;
 	
 	if(!CFStringGetBytes(pathToArchive, rangeToConvert, kCFStringEncodingUTF8, 0, false, NULL, 0, &numBytesUsed))
-		return(-50);
+		return(ret);
 	UInt8 *filePath=new UInt8[numBytesUsed+1];
 	memset(filePath, '\0', numBytesUsed+1);
 	CFStringGetBytes(pathToArchive, rangeToConvert, kCFStringEncodingUTF8, 0, false, filePath, numBytesUsed+1, NULL);
@@ -364,30 +347,33 @@ static OSErr ExtractZipArchiveContent(CFStringRef pathToArchive, const char *fil
 	// open the "content.xml" file living within the sxw and read it into
 	// a CFData structure for use with other CoreFoundation elements.
 	
-	char *openCmd=new char[strlen(kOpenSubfileCmd)+strlen((char *)filePath)+strlen(fileToExtract)+1];
-	memset(openCmd, '\0', strlen(kOpenSubfileCmd)+strlen((char *)filePath)+strlen(fileToExtract)+1);
-	sprintf(openCmd, kOpenSubfileCmd, filePath, fileToExtract);
-		
-	FILE *f=popen(openCmd, "r");
-	if(!f)
+	unzFile f = unzOpen((const char *)filePath);
+	if (f)
 	{
-		delete[] filePath;
-		delete[] openCmd;
-		return(-50);
+		if (unzLocateFile(f, fileToExtract, 0) == UNZ_OK)
+		{
+			if (unzOpenCurrentFile(f) == UNZ_OK)
+			{
+				ret = noErr;
+
+				unsigned char buf[UNZIP_BUFFER_SIZE];
+				int bytesRead = 0;
+				while ((bytesRead = unzReadCurrentFile(f, buf, UNZIP_BUFFER_SIZE)) > 0)
+					CFDataAppendBytes(fileContents, buf, bytesRead);
+
+				unzCloseCurrentFile(f);
+			}
+		}
+
+		unzClose(f);
 	}
-	
-	unsigned char c;
-	while(fread(&c, 1, 1, f)==1)
-		CFDataAppendBytes(fileContents, &c, 1);
-	
-	pclose(f);
-	delete[] openCmd;
+
 	delete[] filePath;
 	
-	if(CFDataGetLength(fileContents) < 28)
+	if (ret == noErr && CFDataGetLength(fileContents) < 28)
 		return(-100);
 	
-	return(noErr);
+	return(ret);
 }
 
 /**
