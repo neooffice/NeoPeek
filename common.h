@@ -65,7 +65,7 @@ bool ODHasPreviewImage(CFURLRef docURL);
  * @return CGImage with preview contents, or NULL on failure.  Ownership
  *	follows the Create rule.
  */
-CGImageRef GetPreviewImageForOD(CFURLRef docURL);
+CGImageRef CreatePreviewImageForOD(CFURLRef docURL);
 
 /**
  * Query if the specified document contains a PDF preview data representation.

@@ -99,7 +99,7 @@ extern "C" bool ODHasPreviewImage(CFURLRef docURL)
 /**
  * Extract the thumbnail image from an OpenDocument text file into a CGImage
  */
-extern "C" CGImageRef GetPreviewImageForOD(CFURLRef docURL)
+extern "C" CGImageRef CreatePreviewImageForOD(CFURLRef docURL)
 {
 	// check if the URL is a local file
 	
@@ -123,13 +123,14 @@ extern "C" CGImageRef GetPreviewImageForOD(CFURLRef docURL)
 	// convert the OpenDocument preview PNG into a CGImage
 	
 	CGDataProviderRef imageData=CGDataProviderCreateWithCFData(pngData);
-	
-	CGImageRef toReturn;
-	toReturn=CGImageCreateWithPNGDataProvider(imageData, NULL, true, kCGRenderingIntentDefault);
+    
+	CGImageRef toReturn=CGImageCreateWithPNGDataProvider(imageData, NULL, true, kCGRenderingIntentDefault);
 	
 	// free memory
-	
-	CFRelease(filePath);
+    
+    CFRelease(filePath);
+    CFRelease(pngData);
+    CFRelease(imageData);
 	
 	return(toReturn);
 }
@@ -188,6 +189,7 @@ extern "C" CFDataRef GetPreviewPDFForOD(CFURLRef docURL)
 	// free memory
 	
 	CFRelease(filePath);
+    CFRelease(pngData);
 	
 	return(pngData);
 }
@@ -396,7 +398,7 @@ QLGeneratorInterfaceStruct ** GetAppleTextQLGenerator(void)
 		// get factory for the qlgenerator plugin type
 		
 		CFArrayRef qlgeneratorFactories=CFPlugInFindFactoriesForPlugInTypeInPlugIn(kQLGeneratorTypeID, generatorPlugin);
-		if(qlgeneratorFactories && CFArrayGetCount(qlgeneratorFactories))
+		if(qlgeneratorFactories)
 		{
 			for(CFIndex i=0; i < CFArrayGetCount(qlgeneratorFactories); i++)
 			{
@@ -415,8 +417,12 @@ QLGeneratorInterfaceStruct ** GetAppleTextQLGenerator(void)
 						break;
 				}
 			}
+            
+            CFRelease(qlgeneratorFactories);
 		}
-		
+        
+        CFRelease(generatorPlugin);
+        
 		// NOTE:  We don't release the plugin;  we never release the plugin since we'll keep the interface statically
 		// in memory so we don't need to relocate it.  As we continue to use the code, we need to keep the plugin
 		// in memory.

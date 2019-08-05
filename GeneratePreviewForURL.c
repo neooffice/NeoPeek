@@ -79,7 +79,7 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 	// fallback on the PNG embedded within the document.
 	
 	if(ODHasPreviewImage(url)) {
-		CGImageRef odPreviewImage=GetPreviewImageForOD(url);
+		CGImageRef odPreviewImage=CreatePreviewImageForOD(url);
 		if(odPreviewImage)
 		{
 			CGContextRef drawRef=QLPreviewRequestCreateContext(preview, CGSizeMake(CGImageGetWidth(odPreviewImage), CGImageGetHeight(odPreviewImage)), 1, NULL);
@@ -92,9 +92,10 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 				
 				CFRelease(drawRef);
 			}
-			CFRelease(odPreviewImage);
-			
-			return(noErr);
+            
+            CFRelease(odPreviewImage);
+            
+            return(noErr);
 		}		
 	}
 	

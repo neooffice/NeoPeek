@@ -88,7 +88,7 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 	// fallback onto the PNG, if available
 	
 	if(ODHasPreviewImage(url)) {
-		CGImageRef odPreviewImage=GetPreviewImageForOD(url);
+		CGImageRef odPreviewImage=CreatePreviewImageForOD(url);
 		if(odPreviewImage)
 		{
 			CGSize imageSize;
@@ -111,9 +111,9 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 				QLThumbnailRequestFlushContext(thumbnail, thumbnailContext);
 				CFRelease(thumbnailContext);
 			}
-			
-			CFRelease(odPreviewImage);
-			
+            
+            CFRelease(odPreviewImage);
+            
 			return(noErr);
 		}
 	}
