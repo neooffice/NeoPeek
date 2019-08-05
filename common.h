@@ -81,7 +81,7 @@ bool ODHasPreviewPDF(CFURLRef docURL);
  * @param docURL	URL of document to query.
  * @return PDF image, or NULL if document does not contain a valid PDF image.
  */
-CFDataRef GetPreviewPDFForOD(CFURLRef docURL);
+CFDataRef CreatePreviewPDFForOD(CFURLRef docURL);
 
 /**
  * Draw the first page of a PDF into a thumbnail CG context.

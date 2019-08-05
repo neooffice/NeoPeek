@@ -58,10 +58,11 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 		isWriter=true;
 	
 	if(ODHasPreviewPDF(url)) {
-		CFDataRef pdfData=GetPreviewPDFForOD(url);
+		CFDataRef pdfData=CreatePreviewPDFForOD(url);
 		if(pdfData)
 		{
 			QLPreviewRequestSetDataRepresentation(preview, pdfData, kUTTypePDF, NULL);
+            CFRelease(pdfData);
 			return(noErr);
 		}
 	}

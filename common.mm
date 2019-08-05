@@ -165,7 +165,7 @@ extern "C" bool ODHasPreviewPDF(CFURLRef docURL)
  * @param docURL	URL of document to query.
  * @return PDF image, or NULL if document does not contain a valid PDF image.
  */
-extern "C" CFDataRef GetPreviewPDFForOD(CFURLRef docURL)
+extern "C" CFDataRef CreatePreviewPDFForOD(CFURLRef docURL)
 {
 	// check if the URL is a local file
 	
@@ -189,7 +189,6 @@ extern "C" CFDataRef GetPreviewPDFForOD(CFURLRef docURL)
 	// free memory
 	
 	CFRelease(filePath);
-    CFRelease(pngData);
 	
 	return(pngData);
 }
