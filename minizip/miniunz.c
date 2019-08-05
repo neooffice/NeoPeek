@@ -16,6 +16,7 @@
 #ifdef unix
 # include <unistd.h>
 # include <utime.h>
+# include <sys/stat.h>
 #else
 # include <direct.h>
 # include <io.h>
@@ -46,7 +47,7 @@
     filename : the filename of the file where date/time must be modified
     dosdate : the new date at the MSDos format (4 bytes)
     tmu_date : the SAME new date at the tm_unz format */
-void change_file_date(filename,dosdate,tmu_date)
+static void change_file_date(filename,dosdate,tmu_date)
     const char *filename;
     uLong dosdate;
     tm_unz tmu_date;
@@ -87,7 +88,7 @@ void change_file_date(filename,dosdate,tmu_date)
 /* mymkdir and change_file_date are not 100 % portable
    As I don't know well Unix, I wait feedback for the unix portion */
 
-int mymkdir(dirname)
+static int mymkdir(dirname)
     const char* dirname;
 {
     int ret=0;
@@ -101,7 +102,7 @@ int mymkdir(dirname)
     return ret;
 }
 
-int makedir (newdir)
+static int makedir (newdir)
     char *newdir;
 {
   char *buffer ;
@@ -165,7 +166,7 @@ void do_help()
 }
 
 
-int do_list(uf)
+static int do_list(uf)
     unzFile uf;
 {
     uLong i;
@@ -238,7 +239,7 @@ int do_list(uf)
 }
 
 
-int do_extract_currentfile(uf,popt_extract_without_path,popt_overwrite,password)
+static int do_extract_currentfile(uf,popt_extract_without_path,popt_overwrite,password)
     unzFile uf;
     const int* popt_extract_without_path;
     int* popt_overwrite;
@@ -253,7 +254,7 @@ int do_extract_currentfile(uf,popt_extract_without_path,popt_overwrite,password)
     uInt size_buf;
 
     unz_file_info file_info;
-    uLong ratio=0;
+   /*  uLong ratio=0; */
     err = unzGetCurrentFileInfo(uf,&file_info,filename_inzip,sizeof(filename_inzip),NULL,0,NULL,0);
 
     if (err!=UNZ_OK)
@@ -345,7 +346,7 @@ int do_extract_currentfile(uf,popt_extract_without_path,popt_overwrite,password)
             {
                 char c=*(filename_withoutpath-1);
                 *(filename_withoutpath-1)='\0';
-                makedir(write_filename);
+                makedir((char*)write_filename);
                 *(filename_withoutpath-1)=c;
                 fout=fopen(write_filename,"wb");
             }
@@ -402,7 +403,7 @@ int do_extract_currentfile(uf,popt_extract_without_path,popt_overwrite,password)
 }
 
 
-int do_extract(uf,opt_extract_without_path,opt_overwrite,password)
+static int do_extract(uf,opt_extract_without_path,opt_overwrite,password)
     unzFile uf;
     int opt_extract_without_path;
     int opt_overwrite;
@@ -411,7 +412,7 @@ int do_extract(uf,opt_extract_without_path,opt_overwrite,password)
     uLong i;
     unz_global_info gi;
     int err;
-    FILE* fout=NULL;
+    /* FILE* fout=NULL; */
 
     err = unzGetGlobalInfo (uf,&gi);
     if (err!=UNZ_OK)
@@ -438,14 +439,14 @@ int do_extract(uf,opt_extract_without_path,opt_overwrite,password)
     return 0;
 }
 
-int do_extract_onefile(uf,filename,opt_extract_without_path,opt_overwrite,password)
+static int do_extract_onefile(uf,filename,opt_extract_without_path,opt_overwrite,password)
     unzFile uf;
     const char* filename;
     int opt_extract_without_path;
     int opt_overwrite;
     const char* password;
 {
-    int err = UNZ_OK;
+    /* int err = UNZ_OK; */
     if (unzLocateFile(uf,filename,CASESENSITIVITY)!=UNZ_OK)
     {
         printf("file %s not found in the zipfile\n",filename);
