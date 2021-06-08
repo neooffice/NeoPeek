@@ -51,7 +51,7 @@
 /**
  * Path to Apple QuickLook plugin for handling Writer documents
  */
-#define kAppleTextQLGeneratorPath	"/System/Library/Frameworks/QuickLook.framework/Resources/Generators/Text.qlgenerator"
+#define kAppleTextQLGeneratorPath	"/System/Library/QuickLook/Text.qlgenerator"
 
 #define UNZIP_BUFFER_SIZE 4096
 
@@ -110,6 +110,12 @@ extern "C" CGImageRef CreatePreviewImageForOD(CFURLRef docURL)
 	// extract the thumbnail image data from the file
 	
 	CFMutableDataRef pngData=CFDataCreateMutable(kCFAllocatorDefault, 0);
+    if(!pngData)
+    {
+        CFRelease(filePath);
+        return(NULL);
+    }
+    
 	if(ExtractZipArchiveContent(filePath, kODThumbnailPath, pngData)!=noErr)
 	{
 		CFStringRef asString=CFURLGetString(docURL);
@@ -122,15 +128,18 @@ extern "C" CGImageRef CreatePreviewImageForOD(CFURLRef docURL)
 	
 	// convert the OpenDocument preview PNG into a CGImage
 	
+    CGImageRef toReturn=NULL;
 	CGDataProviderRef imageData=CGDataProviderCreateWithCFData(pngData);
-    
-	CGImageRef toReturn=CGImageCreateWithPNGDataProvider(imageData, NULL, true, kCGRenderingIntentDefault);
+    if(imageData)
+    {
+        toReturn=CGImageCreateWithPNGDataProvider(imageData, NULL, true, kCGRenderingIntentDefault);
+        CGDataProviderRelease(imageData);
+    }
 	
 	// free memory
     
     CFRelease(filePath);
     CFRelease(pngData);
-    CFRelease(imageData);
 	
 	return(toReturn);
 }
@@ -176,6 +185,12 @@ extern "C" CFDataRef CreatePreviewPDFForOD(CFURLRef docURL)
 	// extract the thumbnail image data from the file
 	
 	CFMutableDataRef pngData=CFDataCreateMutable(kCFAllocatorDefault, 0);
+    if(!pngData)
+    {
+        CFRelease(filePath);
+        return(NULL);
+    }
+    
 	if(ExtractZipArchiveContent(filePath, kODPDFPath, pngData)!=noErr)
 	{
 		CFStringRef asString=CFURLGetString(docURL);
@@ -212,6 +227,12 @@ extern "C" bool DrawThumbnailPDFPageOneForOD(CFURLRef docURL, QLThumbnailRequest
 	// extract the thumbnail image data from the file
 	
 	CFMutableDataRef pdfData=CFDataCreateMutable(kCFAllocatorDefault, 0);
+    if(!pdfData)
+    {
+        CFRelease(filePath);
+        return(NULL);
+    }
+    
 	if(ExtractZipArchiveContent(filePath, kODPDFPath, pdfData)!=noErr)
 	{
 		CFStringRef asString=CFURLGetString(docURL);
@@ -227,6 +248,8 @@ extern "C" bool DrawThumbnailPDFPageOneForOD(CFURLRef docURL, QLThumbnailRequest
 	bool toReturn=false;
 	
 	CGDataProviderRef pdfDataProvider=CGDataProviderCreateWithCFData(pdfData);
+	if(pdfDataProvider)
+	{
 	CGPDFDocumentRef theDoc=CGPDFDocumentCreateWithProvider(pdfDataProvider);
 	if(theDoc)
 	{
@@ -251,7 +274,7 @@ extern "C" bool DrawThumbnailPDFPageOneForOD(CFURLRef docURL, QLThumbnailRequest
 					}
 					CGContextDrawPDFPage(thumbnailContext, pageZero);
 					QLThumbnailRequestFlushContext(thumbRequest, thumbnailContext);
-					CFRelease(thumbnailContext);
+					CGContextRelease(thumbnailContext);
 					toReturn=true;
 				}
 			}
@@ -259,10 +282,12 @@ extern "C" bool DrawThumbnailPDFPageOneForOD(CFURLRef docURL, QLThumbnailRequest
 		
 		CGPDFDocumentRelease(theDoc);
 	}
+
+		CGDataProviderRelease(pdfDataProvider);
+	}
 	
 	// free memory
 	
-	CFRelease(pdfDataProvider);
 	CFRelease(pdfData);
 	CFRelease(filePath);
 	
@@ -391,6 +416,9 @@ QLGeneratorInterfaceStruct ** GetAppleTextQLGenerator(void)
 		return(interface);
 	
 	CFURLRef pluginURL=CFURLCreateWithFileSystemPath(kCFAllocatorDefault, CFSTR(kAppleTextQLGeneratorPath), kCFURLPOSIXPathStyle, TRUE);
+    if(!pluginURL)
+        return(interface);
+    
 	CFPlugInRef generatorPlugin=CFPlugInCreate(kCFAllocatorDefault, pluginURL);
 	if(generatorPlugin)
 	{
