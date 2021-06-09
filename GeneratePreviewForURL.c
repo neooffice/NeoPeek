@@ -91,10 +91,10 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 				destRect.size=CGSizeMake(CGImageGetWidth(odPreviewImage), CGImageGetHeight(odPreviewImage));
 				CGContextDrawImage(drawRef, destRect, odPreviewImage);
 				
-				CFRelease(drawRef);
+				CGContextRelease(drawRef);
 			}
             
-            CFRelease(odPreviewImage);
+            CGImageRelease(odPreviewImage);
             
             return(noErr);
 		}		

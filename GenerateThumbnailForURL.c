@@ -109,10 +109,10 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
 				}
 				CGContextDrawImage(thumbnailContext, bgRect, odPreviewImage);
 				QLThumbnailRequestFlushContext(thumbnail, thumbnailContext);
-				CFRelease(thumbnailContext);
+				CGContextRelease(thumbnailContext);
 			}
             
-            CFRelease(odPreviewImage);
+            CGImageRelease(odPreviewImage);
             
 			return(noErr);
 		}
